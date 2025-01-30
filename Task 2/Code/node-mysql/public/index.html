@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>My Visitor App</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Welcome to My Visitor App</h1>
+    
+    <form id="visitorForm">
+      <input type="text" id="visitorName" placeholder="Enter visitor name" required />
+      <button type="submit">Add Visitor</button>
+    </form>
+
+    <div class="table-container">
+      <h2>All Visitors</h2>
+      <table id="visitorsTable">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Visit Time</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Filled dynamically by main.js -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script src="main.js"></script>
+</body>
+</html>

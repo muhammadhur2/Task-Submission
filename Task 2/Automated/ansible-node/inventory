@@ -1,0 +1,3 @@
+[servers]
+192.168.10.183 ansible_user=ubuntu ansible_ssh_private_key_file=~/ansible-node/key.pem
+

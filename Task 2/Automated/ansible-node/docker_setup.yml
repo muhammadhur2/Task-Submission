@@ -1,0 +1,102 @@
+---
+- name: Setup Docker and Deploy Application
+  hosts: all
+  become: yes
+  tasks:
+    - name: Update package list
+      apt:
+        update_cache: yes
+
+    - name: Install required dependencies
+      apt:
+        name:
+          - ca-certificates
+          - curl
+        state: present
+
+    - name: Add Docker GPG key
+      shell: |
+        install -m 0755 -d /etc/apt/keyrings
+        curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+        chmod a+r /etc/apt/keyrings/docker.asc
+
+    - name: Add Docker repository
+      shell: |
+        echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") stable" > /etc/apt/sources.list.d/docker.list
+
+    - name: Update package list again
+      apt:
+        update_cache: yes
+
+    - name: Install Docker and dependencies
+      apt:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-buildx-plugin
+          - docker-compose-plugin
+        state: present
+
+    - name: Create docker-compose.yml file
+      copy:
+        dest: "/home/{{ ansible_user }}/docker-compose.yml"
+        content: |
+          networks:
+            mynetwork:
+              driver: bridge
+          
+          services:
+            mysql:
+              image: mysql:latest
+              container_name: mysql-container
+              restart: always
+              env_file:
+                - .env.docker
+              environment:
+                MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+                MYSQL_DATABASE: ${DB_NAME}
+              ports:
+                - "3306:3306"
+              volumes:
+                - mysql_data1:/var/lib/mysql
+              networks:
+                - mynetwork
+          
+            app:
+              image: muhammadhur/nodejsapp:latest
+              container_name: nodejsapp
+              restart: always
+              depends_on:
+                - mysql
+              env_file:
+                - .env.docker
+              environment:
+                DB_HOST: ${DB_HOST}
+                DB_USER: ${DB_USER}
+                DB_PASSWORD: ${DB_PASSWORD}
+                DB_NAME: ${DB_NAME}
+                PORT: ${PORT}
+              ports:
+                - "${PORT}:${PORT}"
+              networks:
+                - mynetwork
+          
+          volumes:
+            mysql_data1:
+
+    - name: Create .env.docker file
+      copy:
+        dest: "/home/{{ ansible_user }}/.env.docker"
+        content: |
+          DB_HOST=mysql
+          DB_USER=root
+          DB_PASSWORD=my-secret-pw
+          DB_NAME=mydatabase
+          DB_PORT=3306
+          PORT=3005
+
+    - name: Start Docker Compose
+      shell: "docker compose --env-file /home/{{ ansible_user }}/.env.docker up -d --build"
+      args:
+        chdir: "/home/{{ ansible_user }}/"
