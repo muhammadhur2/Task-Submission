@@ -11,10 +11,9 @@ let pool;
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
       port: process.env.DB_PORT || 3306,
-      connectionLimit: 10 // Adjust as needed
+      connectionLimit: 10 
     });
 
-    // Create table if not exists
     const createTableQuery = `
       CREATE TABLE IF NOT EXISTS visitors (
         id INT AUTO_INCREMENT PRIMARY KEY,

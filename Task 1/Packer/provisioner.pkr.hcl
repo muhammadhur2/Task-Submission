@@ -4,8 +4,10 @@ build {
 
   provisioner "shell" {
     inline = [
-      # Set environment for non-interactive APT operations
       "export DEBIAN_FRONTEND=noninteractive",
+
+      "sleep 200",
+      
       "apt-get update -y",
       "apt-get upgrade -y",
 

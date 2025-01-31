@@ -24,7 +24,7 @@ afterEach(async () => {
     it('should return 400 if name is not provided', async () => {
       const response = await request(app)
         .post('/api/visitors')
-        .send({}); // No name provided
+        .send({}); 
 
       expect(response.status).to.equal(400);
       expect(response.body).to.have.property('error', 'Name is required');

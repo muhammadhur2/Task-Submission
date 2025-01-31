@@ -1,6 +1,5 @@
 const { getPool } = require('../config/db');
 
-// Add a visitor
 exports.createVisitor = async (req, res) => {
   try {
     const { name } = req.body;
@@ -22,7 +21,6 @@ exports.createVisitor = async (req, res) => {
   }
 };
 
-// Get all visitors
 exports.getAllVisitors = async (req, res) => {
   try {
     const pool = getPool();

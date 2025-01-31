@@ -2,10 +2,8 @@ const form = document.getElementById('visitorForm');
 const visitorNameInput = document.getElementById('visitorName');
 const visitorsTableBody = document.querySelector('#visitorsTable tbody');
 
-// Fetch all visitors on page load
 window.addEventListener('DOMContentLoaded', fetchVisitors);
 
-// Handle form submission
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
   const name = visitorNameInput.value.trim();
@@ -13,7 +11,6 @@ form.addEventListener('submit', async (e) => {
   if (!name) return;
 
   try {
-    // POST request to add a visitor
     const response = await fetch('/api/visitors', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -22,7 +19,7 @@ form.addEventListener('submit', async (e) => {
 
     if (response.ok) {
       visitorNameInput.value = '';
-      await fetchVisitors(); // Refresh the visitors list
+      await fetchVisitors(); 
     } else {
       console.error('Error adding visitor');
     }
@@ -31,7 +28,6 @@ form.addEventListener('submit', async (e) => {
   }
 });
 
-// Fetch and display visitors
 async function fetchVisitors() {
   try {
     const response = await fetch('/api/visitors');
@@ -40,10 +36,8 @@ async function fetchVisitors() {
     }
     const visitors = await response.json();
 
-    // Clear current table rows
     visitorsTableBody.innerHTML = '';
 
-    // Populate table
     visitors.forEach(visitor => {
       const row = document.createElement('tr');
 
